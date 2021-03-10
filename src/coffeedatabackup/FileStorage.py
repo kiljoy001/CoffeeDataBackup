@@ -25,7 +25,8 @@ def create_session():
 
 def send_to_storage(file_name, bucket_name, file_hash):
     uploader = create_session()
-    remote_name = file_name.join(file_hash)
+    path_split = file_name.split('/')
+    remote_name = f'{path_split[(-1 * len(path_split)) - 1:]}_{file_name}'
     uploader.upload_file(file_name, bucket_name, remote_name)
 
 
