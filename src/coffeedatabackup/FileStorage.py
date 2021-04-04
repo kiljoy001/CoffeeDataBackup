@@ -1,5 +1,6 @@
 import boto3
 import yaml
+from src.coffeedatabackup.RoastDataInformation import RoastDataCollection
 from pathlib import Path
 
 SETTINGS = Path(__file__).parent.joinpath('settings.yaml')
@@ -23,10 +24,10 @@ def create_session():
     return filebase_client
 
 
-def send_to_storage(file_name, bucket_name, file_hash):
+def send_to_storage(file_name, bucket_name):
     uploader = create_session()
     path_split = file_name.split('/')
-    remote_name = f'{path_split[(-1 * len(path_split)) - 1:]}_{file_name}'
+    remote_name = f'{path_split.pop()}_{file_hash}'
     uploader.upload_file(file_name, bucket_name, remote_name)
 
 
@@ -34,3 +35,13 @@ def get_from_storage(bucket_name, remote_file_name, local_file_name):
     downloader = create_session()
     retrieved_file = downloader.download_file(bucket_name, remote_file_name, local_file_name)
     return retrieved_file
+
+def remove_from_storage(bucket_name, remote_file_name):
+    remover = create_session()
+    remover.delete_object(Bucket=bucket_name, Delete={
+        'Objects':[
+            {
+                'Key':remote_file_name
+            }
+        ]
+    })
