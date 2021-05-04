@@ -36,12 +36,8 @@ def get_from_storage(bucket_name, remote_file_name, local_file_name):
     retrieved_file = downloader.download_file(bucket_name, remote_file_name, local_file_name)
     return retrieved_file
 
+
 def remove_from_storage(bucket_name, remote_file_name):
     remover = create_session()
-    remover.delete_object(Bucket=bucket_name, Delete={
-        'Objects':[
-            {
-                'Key':remote_file_name
-            }
-        ]
-    })
+    remover.delete_object(Bucket=bucket_name, Key=remote_file_name)
+

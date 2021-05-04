@@ -1,5 +1,5 @@
 import peewee as pw
-import roastplanmodels as rpm
+import coffeedatabackup.roastplanmodels as rpm
 from loguru import logger
 import hashlib
 logger.add('roast_data_log.log', rotation="00:00")
