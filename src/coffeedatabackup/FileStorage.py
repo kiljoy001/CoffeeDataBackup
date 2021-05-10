@@ -24,7 +24,7 @@ def create_session():
     return filebase_client
 
 
-def send_to_storage(file_name, bucket_name):
+def send_to_storage(file_name, bucket_name, file_hash):
     uploader = create_session()
     path_split = file_name.split('/')
     remote_name = f'{path_split.pop()}_{file_hash}'
@@ -41,3 +41,12 @@ def remove_from_storage(bucket_name, remote_file_name):
     remover = create_session()
     remover.delete_object(Bucket=bucket_name, Key=remote_file_name)
 
+
+def rename_file(bucket_name, new_remote_file_name, old_remote_file_name):
+    copier = create_session()
+    source_location = {
+        'Bucket': bucket_name,
+        'Key': old_remote_file_name
+    }
+    copier.copy(source_location, bucket_name, new_remote_file_name )
+    remove_from_storage(bucket_name, old_remote_file_name)
